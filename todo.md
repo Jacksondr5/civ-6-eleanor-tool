@@ -1,0 +1,3 @@
+- remove cities
+- implement colors
+- deploy
