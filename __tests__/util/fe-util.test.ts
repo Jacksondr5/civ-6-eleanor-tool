@@ -6,6 +6,7 @@ import {
   ErrorMessages,
   getEnvVar,
   getMaxOccupants,
+  removeCity,
   updateCitiesWithinNine,
   updateGreatWorks,
 } from "../../util/fe-util";
@@ -18,7 +19,7 @@ describe("fe-util", () => {
       expect(getMaxOccupants("artMuseam")).toBe(3);
       expect(getMaxOccupants("artifactMuseam")).toBe(3);
       expect(getMaxOccupants("broadcastCenter")).toBe(1);
-      expect(getMaxOccupants("wonder")).toBe(-1);
+      expect(getMaxOccupants("wonder")).toBe(100);
       expect(getMaxOccupants("palace")).toBe(1);
     });
   });
@@ -88,6 +89,51 @@ describe("fe-util", () => {
       ];
       expect(() => addCity(existingCities, "test")).toThrowError(
         ErrorMessages.CITY_ALREADY_EXISTS("test")
+      );
+    });
+  });
+  describe("removeCity", () => {
+    test("should remove the city from the given list", () => {
+      const existingCities: CityData[] = [
+        {
+          name: "test",
+          citiesWithinNine: [],
+          greatWorkBuildings: DEFAULT_GREAT_WORK_COUNTER,
+          color: "red",
+        },
+      ];
+      const updatedCities = removeCity(existingCities, "test");
+      expect(updatedCities).toHaveLength(0);
+    });
+    test("should update colors", () => {
+      const existingCities: CityData[] = [
+        {
+          name: "test",
+          citiesWithinNine: ["test3"],
+          greatWorkBuildings: DEFAULT_GREAT_WORK_COUNTER,
+          color: "red",
+        },
+        {
+          name: "test2",
+          citiesWithinNine: ["test3"],
+          greatWorkBuildings: DEFAULT_GREAT_WORK_COUNTER,
+          color: "green",
+        },
+      ];
+      const updatedCities = removeCity(existingCities, "test2");
+      expect(updatedCities[0].color).toBe("green");
+    });
+    test("should throw if the city does not exist", () => {
+      const existingCities: CityData[] = [
+        {
+          name: "test",
+          citiesWithinNine: [],
+          greatWorkBuildings: DEFAULT_GREAT_WORK_COUNTER,
+          color: "red",
+        },
+      ];
+      expect(() => removeCity(existingCities, "test2")).toThrowError(
+        ErrorMessages.CITY_NOT_FOUND("test2")
       );
     });
   });

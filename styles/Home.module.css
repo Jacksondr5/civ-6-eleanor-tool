@@ -1,10 +1,26 @@
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  padding: 6rem;
+  padding: 3rem;
   min-height: 100vh;
+}
+
+.alert {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.low-value {
+  background-color: rgb(196, 44, 44);
+}
+
+.medium-value {
+  background-color: rgb(190, 136, 35);
+}
+
+.high-value {
+  background-color: rgb(30, 119, 30);
 }
 
 .description {
@@ -97,7 +113,7 @@
 
 .center::before,
 .center::after {
-  content: '';
+  content: "";
   left: 50%;
   position: absolute;
   filter: blur(45px);
@@ -125,7 +141,7 @@
 
 .thirteen::before,
 .thirteen::after {
-  content: '';
+  content: "";
   position: absolute;
   z-index: -1;
 }

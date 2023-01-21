@@ -1,3 +1,4 @@
+import { CountingError } from "./errors";
 import { getJsonData, saveDataAsJson } from "./fs.wrapper";
 
 export type CityData = {
@@ -50,7 +51,7 @@ export const getMaxOccupants = (type: GreatWorkBuildingType) => {
     case "broadcastCenter":
       return 1;
     case "wonder":
-      return -1;
+      return 100;
     case "palace":
       return 1;
   }
@@ -90,6 +91,18 @@ export const addCity = (
   );
 };
 
+export const removeCity = (
+  existingCities: CityData[],
+  cityName: string
+): CityData[] => {
+  if (!existingCities.find((c) => c.name === cityName)) {
+    throw new Error(ErrorMessages.CITY_NOT_FOUND(cityName));
+  }
+  return calculateHighlightColors(
+    existingCities.filter((c) => c.name !== cityName)
+  );
+};
+
 export const updateGreatWorks = (
   existingCities: CityData[],
   cityName: string,
@@ -97,7 +110,9 @@ export const updateGreatWorks = (
   newCount: number
 ): CityData[] => {
   if (newCount > getMaxOccupants(buildingType)) {
-    throw new Error(ErrorMessages.COUNT_TOO_HIGH(newCount, buildingType));
+    throw new CountingError(
+      ErrorMessages.COUNT_TOO_HIGH(newCount, buildingType)
+    );
   }
   const city = existingCities.find((c) => c.name === cityName);
   if (!city) {
@@ -116,16 +131,19 @@ export const updateGreatWorks = (
 };
 
 export const calculateHighlightColors = (cities: CityData[]): CityData[] => {
-  const averageCitiesWithinNine = cities.reduce(
+  const totalCitiesWithinNine = cities.reduce(
     (acc, city) => acc + city.citiesWithinNine.length,
     0
   );
-  const average = averageCitiesWithinNine / cities.length;
+  const averageCitiesWithinNine = totalCitiesWithinNine / cities.length;
   return cities.map((city) => {
     if (city.citiesWithinNine.length === 0) {
       return { ...city, color: "red" };
     }
-    const color = city.citiesWithinNine.length >= average ? "green" : "orange";
+    const color =
+      city.citiesWithinNine.length >= averageCitiesWithinNine
+        ? "green"
+        : "orange";
     return { ...city, color };
   });
 };
