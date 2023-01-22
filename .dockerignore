@@ -1,0 +1,39 @@
+node_modules
+**/node_modules
+**/build
+**/dist
+**/.turbo
+out
+.yarn/cache/**
+
+.gitignore
+.git
+
+# Docker related
+.dockerignore
+Dockerfile
+Dockerfile*
+docker-compose.*.yml
+docker-compose.yml
+docker
+
+# Log files
+logs
+*.log
+
+# Temp files
+tmp
+*.tmp
+
+# IDE related
+.idea
+.vscode
+
+
+# NextJS related
+.next
+.swc
+
+# Environment variables
+.env
+.env.*
