@@ -1,6 +1,10 @@
 import { ErrorMessages, getCityData, saveCityData } from "../../util/be-util";
 import { CityData, DEFAULT_GREAT_WORK_COUNTER } from "../../util/fe-util";
-import { getJsonData, saveDataAsJson } from "../../util/fs.wrapper";
+import {
+  checkFileExists,
+  getJsonData,
+  saveDataAsJson,
+} from "../../util/fs.wrapper";
 
 jest.mock("../../util/fs.wrapper");
 
@@ -24,6 +28,7 @@ describe("be-util", () => {
   describe("getCityData", () => {
     beforeEach(() => {
       jest.resetAllMocks();
+      (checkFileExists as jest.Mock).mockResolvedValue(true);
     });
     it("should get city data", async () => {
       const mockData: CityData[] = [
@@ -38,11 +43,11 @@ describe("be-util", () => {
       const cityData = await getCityData();
       expect(cityData).toEqual(mockData);
     });
-    it("should throw if city data is not found", () => {
-      (getJsonData as jest.Mock).mockResolvedValue(undefined);
-      expect(getCityData()).rejects.toThrowError(
-        ErrorMessages.CITY_DATA_FILE_NOT_FOUND
-      );
+    it("should create blank file city data is not found", async () => {
+      (checkFileExists as jest.Mock).mockResolvedValue(false);
+      const cityData = await getCityData();
+      expect(cityData).toEqual([]);
+      expect(saveDataAsJson).toHaveBeenCalledWith("CITY_DATA_FILE", []);
     });
   });
 });

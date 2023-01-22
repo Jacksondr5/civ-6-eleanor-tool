@@ -311,7 +311,7 @@ export default function Home(props: { data: CityData[] }) {
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const data = await getCityData();
   return {
     props: {
